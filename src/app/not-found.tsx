@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound() { return <section className="container" style={{ paddingBlock: '120px' }}><p className="eyebrow">404 / A different direction</p><h1 className="display-title">This door<br />doesn’t open.</h1><p>That page could not be found. There’s more to explore back home.</p><Link className="button button-primary" href="/">Back to home ↗</Link></section>; }

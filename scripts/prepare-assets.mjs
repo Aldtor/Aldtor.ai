@@ -1,0 +1,16 @@
+import fs from 'node:fs/promises';
+import sharp from 'sharp';
+const portrait = await sharp('public/images/portrait-cutout.png').resize({ width: 1000, withoutEnlargement: true }).webp({ quality: 88 }).toFile('public/images/portrait-cutout.webp');
+const story = await sharp('saty.jpeg').resize({ width: 900, withoutEnlargement: true }).webp({ quality: 82 }).toFile('public/images/story.webp');
+await sharp(Buffer.from(`<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="630" fill="#e8e4e0"/><text x="70" y="95" font-family="Arial" font-size="28" font-weight="bold" fill="#1a1818">ALDTOR ↗</text><text x="65" y="290" font-family="Arial" font-size="94" letter-spacing="-5" fill="#1a1818">A curious mind.</text><text x="65" y="395" font-family="Arial" font-size="94" letter-spacing="-5" fill="#1a1818">Many creative sides.</text><line x1="70" x2="1130" y1="525" y2="525" stroke="#c4b0b0"/><text x="70" y="570" font-family="Arial" font-size="18" fill="#6b5c5c">DEVELOPMENT / DESIGN / VISUAL STORYTELLING</text></svg>`)).png().toFile('public/images/social-card.png');
+console.log({portraitBytes:portrait.size,storyBytes:story.size});
+const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+const css = await (await fetch('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap', {headers:{'User-Agent':ua}})).text();
+const matches = [...css.matchAll(/src: url\(([^)]+)\)/g)];
+const url = matches.at(-1)?.[1];
+if (!url) throw new Error('Font URL unavailable');
+await fs.writeFile('public/fonts/onest-latin.woff2', Buffer.from(await (await fetch(url)).arrayBuffer()));
+const license = await fetch('https://raw.githubusercontent.com/google/fonts/main/ofl/onest/OFL.txt');
+if (!license.ok) throw new Error('Font license unavailable');
+await fs.writeFile('public/fonts/OFL.txt', await license.text());
+console.log('Assets and self-hosted font prepared');
