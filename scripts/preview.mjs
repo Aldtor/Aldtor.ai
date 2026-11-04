@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { resolve, extname, sep, join, basename, dirname } from 'node:path';
+import { resolve, extname, sep, join } from 'node:path';
 const root = resolve('out');
 const port = Number(process.env.PORT || 3000);
 const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpeg': 'image/jpeg', '.woff2': 'font/woff2', '.xml': 'application/xml' };
