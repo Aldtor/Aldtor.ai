@@ -12,9 +12,11 @@ export function Header() {
   const [time, setTime] = useState('');
   const [dark, setDark] = useState(false);
   useEffect(() => {
-    const saved = localStorage.getItem('aldtor-theme');
+    let saved: string | null = null;
+    try { saved = localStorage.getItem('aldtor-theme'); } catch { /* Theme remains available for this visit. */ }
     const isDark = saved === 'dark';
     document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Restore the visitor's saved browser theme.
     setDark(isDark);
     const update = () => setTime(new Intl.DateTimeFormat('en-GB', { timeZone: siteConfig.timezone, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()));
     update(); const timer = window.setInterval(update, 30000);
@@ -23,7 +25,7 @@ export function Header() {
   useEffect(() => { dialog.current?.close(); }, [pathname]);
   function closeMenu() { dialog.current?.close(); }
   function contact() { closeMenu(); window.dispatchEvent(new CustomEvent('aldtor:contact')); }
-  function toggleTheme() { const next = !dark; setDark(next); document.documentElement.dataset.theme = next ? 'dark' : 'light'; localStorage.setItem('aldtor-theme', next ? 'dark' : 'light'); }
+  function toggleTheme() { const next = !dark; setDark(next); document.documentElement.dataset.theme = next ? 'dark' : 'light'; try { localStorage.setItem('aldtor-theme', next ? 'dark' : 'light'); } catch { /* Keep the selected theme for this visit. */ } }
   return <>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <header className="site-header">

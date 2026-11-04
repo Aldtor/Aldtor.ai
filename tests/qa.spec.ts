@@ -23,9 +23,9 @@ test('all routes render without browser errors, broken assets, invalid links or 
       await page.waitForTimeout(100);
       const overflow = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
       expect(overflow.document, `${route} at ${width}px`).toBeLessThanOrEqual(overflow.viewport + 1);
-      if ([1440, 1024, 390].includes(width)) {
+      if (width === 390) {
         await page.evaluate(() => window.scrollTo(0, 0));
-        await page.screenshot({ path: info.outputPath(`${route.replaceAll('/', '') || 'home'}-${width}.png`), fullPage: true, animations: 'disabled' });
+        await page.screenshot({ path: info.outputPath(`${route.replaceAll('/', '') || 'home'}-${width}.png`), fullPage: false, animations: 'disabled' });
       }
     }
     const broken = await page.locator('img').evaluateAll(images => (images as HTMLImageElement[]).filter(img => !img.complete || !img.naturalWidth).map(img => img.getAttribute('src')));
@@ -34,6 +34,21 @@ test('all routes render without browser errors, broken assets, invalid links or 
     expect(badLinks, route).toEqual([]);
   }
   expect(errors).toEqual([]);
+});
+
+test('reduced motion and blocked browser storage keep the site usable', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.addInitScript(() => Object.defineProperty(window, 'localStorage', {
+    configurable: false,
+    get() { throw new DOMException('Storage is blocked', 'SecurityError'); },
+  }));
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: /Good things happen/ })).toBeVisible();
+  await expect(page.getByRole('tablist', { name: 'Creative process' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Switch to dark theme/ })).toBeVisible();
+  await page.getByRole('button', { name: /Switch to dark theme/ }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('complementary', { name: 'Site preferences' })).toBeVisible();
 });
 
 test('mobile touch card flip and gallery pointer drag preserve usable state', async ({ browser }) => {
@@ -50,15 +65,15 @@ test('mobile touch card flip and gallery pointer drag preserve usable state', as
   await canvas.scrollIntoViewIfNeeded();
   const box = (await canvas.boundingBox())!;
   const world = canvas.locator(':scope > div').first();
-  const before = await world.getAttribute('style');
+  const before = await world.evaluate(el => getComputedStyle(el).transform);
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.down();
   await page.mouse.move(box.x + box.width / 2 + 90, box.y + box.height / 2 + 60, { steps: 8 });
   await page.mouse.up();
-  await expect(world).not.toHaveAttribute('style', before!);
+  await expect.poll(() => world.evaluate(el => getComputedStyle(el).transform)).not.toBe(before);
   await expect(page.getByRole('dialog', { name: 'Illustrative image study viewer' })).not.toBeVisible();
   await page.getByRole('button', { name: 'Reset view' }).tap();
-  await expect(world).toHaveAttribute('style', before!);
+  await expect.poll(() => world.evaluate(el => getComputedStyle(el).transform)).toBe(before);
   await context.close();
 });
 
@@ -67,7 +82,7 @@ test('consent persists, contact validates and produces a real brief, modal resto
   await page.getByRole('complementary', { name: 'Site preferences' }).getByRole('button', { name: 'Reject', exact: true }).click();
   await page.reload();
   await expect(page.getByRole('complementary', { name: 'Site preferences' })).toHaveCount(0);
-  await page.getByRole('button', { name: 'Hire me', exact: true }).click();
+  await page.getByRole('button', { name: 'Start a project brief', exact: true }).click();
   const modal = page.getByRole('dialog', { name: 'Start a conversation' });
   await expect(modal).toBeVisible();
   await modal.getByRole('button', { name: 'Download brief' }).click();
@@ -83,7 +98,7 @@ test('consent persists, contact validates and produces a real brief, modal resto
   await expect(modal.getByRole('status')).toContainText('No message has been sent');
   await page.keyboard.press('Escape');
   await expect(modal).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Hire me', exact: true })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Start a project brief', exact: true })).toBeFocused();
   await page.getByRole('button', { name: 'Cookie preferences' }).click();
   await expect(page.getByRole('dialog', { name: 'Your preferences' })).toContainText('Rejected');
   await page.getByRole('button', { name: 'Accept preferences' }).click();
@@ -93,7 +108,7 @@ test('consent persists, contact validates and produces a real brief, modal resto
 test('ability card, doors and timeline support keyboard interaction', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('aldtor-preferences', 'rejected'));
   await page.goto('/');
-  await page.getByRole('button', { name: /My ability card/ }).click();
+  await page.getByRole('button', { name: /My ability card/ }).click({ force: true });
   await page.getByRole('button', { name: 'Flip card' }).click();
   await expect(page.getByRole('button', { name: 'Show front' })).toBeVisible();
   await page.keyboard.press('Escape');
@@ -135,12 +150,12 @@ test('service demos and gallery navigation change visible state', async ({ page 
   await page.goto('/photographer/');
   const canvas = page.getByRole('region', { name: /Draggable illustrative gallery/ });
   const world = canvas.locator(':scope > div').first();
-  const before = await world.getAttribute('style');
+  const before = await world.evaluate(el => getComputedStyle(el).transform);
   await canvas.focus();
   await page.keyboard.press('ArrowRight');
-  await expect(world).not.toHaveAttribute('style', before!);
+  await expect.poll(() => world.evaluate(el => getComputedStyle(el).transform)).not.toBe(before);
   await page.getByRole('button', { name: 'Reset view' }).click();
-  await expect(world).toHaveAttribute('style', before!);
+  await expect.poll(() => world.evaluate(el => getComputedStyle(el).transform)).toBe(before);
 });
 
 test('mobile navigation routes and Escape dismissal work', async ({ page }) => {

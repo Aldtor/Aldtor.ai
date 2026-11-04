@@ -42,7 +42,12 @@ export function ExperienceLayer() {
   const [choice, setChoice] = useState<string | null>(null);
   const pathname = usePathname();
   useEffect(() => {
-    try { const saved = localStorage.getItem('aldtor-preferences'); setChoice(saved); setConsentPrompt(!saved); } catch { setConsentPrompt(true); }
+    try {
+      const saved = localStorage.getItem('aldtor-preferences');
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Read browser-only state after SSR hydration.
+      setChoice(saved);
+      setConsentPrompt(!saved);
+    } catch { setConsentPrompt(true); }
     const contact = () => setActive('contact'); const ability = () => setActive('ability'); const consent = () => setActive('consent');
     window.addEventListener('aldtor:contact', contact); window.addEventListener('aldtor:ability', ability); window.addEventListener('aldtor:consent', consent);
     return () => { window.removeEventListener('aldtor:contact', contact); window.removeEventListener('aldtor:ability', ability); window.removeEventListener('aldtor:consent', consent); };

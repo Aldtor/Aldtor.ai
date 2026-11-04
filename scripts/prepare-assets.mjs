@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
-import sharp from 'sharp';
+import { createRequire } from 'node:module';
+const sharp = createRequire(import.meta.resolve('next'))('sharp');
 const portrait = await sharp('public/images/portrait-cutout.png').resize({ width: 1000, withoutEnlargement: true }).webp({ quality: 88 }).toFile('public/images/portrait-cutout.webp');
 const story = await sharp('saty.jpeg').resize({ width: 900, withoutEnlargement: true }).webp({ quality: 82 }).toFile('public/images/story.webp');
 await sharp(Buffer.from(`<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="630" fill="#e8e4e0"/><text x="70" y="95" font-family="Arial" font-size="28" font-weight="bold" fill="#1a1818">ALDTOR ↗</text><text x="65" y="290" font-family="Arial" font-size="94" letter-spacing="-5" fill="#1a1818">A curious mind.</text><text x="65" y="395" font-family="Arial" font-size="94" letter-spacing="-5" fill="#1a1818">Many creative sides.</text><line x1="70" x2="1130" y1="525" y2="525" stroke="#c4b0b0"/><text x="70" y="570" font-family="Arial" font-size="18" fill="#6b5c5c">DEVELOPMENT / DESIGN / VISUAL STORYTELLING</text></svg>`)).png().toFile('public/images/social-card.png');

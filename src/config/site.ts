@@ -5,7 +5,7 @@ export const siteConfig = {
   brand: 'ALDTOR',
   name: null as string | null,
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || null as string | null,
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://aldtor-creative-portfolio.satinhotel1.chatgpt.site',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://aldtorai.vercel.app',
   description: 'ALDTOR is an independent creative practice exploring web development, apps, interfaces, graphic design and photography.',
   phone: null as string | null,
   location: null as string | null,
