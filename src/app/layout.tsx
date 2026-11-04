@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: { default: 'ALDTOR — A curious mind. Many creative sides.', template: '%s — ALDTOR' },
   description: siteConfig.description,
-  openGraph: { type: 'website', locale: 'en_US', siteName: siteConfig.brand, title: 'ALDTOR — Independent creative practice', description: siteConfig.description, images: [{ url: '/images/social-card.png', width: 1200, height: 630, alt: 'ALDTOR — A curious mind. Many creative sides.' }] },
+  openGraph: { type: 'website', locale: 'en_US', siteName: siteConfig.brand, title: 'ALDTOR — Independent creative practice', description: siteConfig.description, images: [{ url: '/social-card.svg', width: 1200, height: 630, alt: 'ALDTOR — A curious mind. Many creative sides.' }] },
   twitter: { card: 'summary_large_image' },
   icons: { icon: '/favicon.svg' },
 };

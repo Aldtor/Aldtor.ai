@@ -33,7 +33,7 @@ export function HomePage() {
           <p className={styles.intro}>{homeContent.intro}</p>
           <div className={styles.heroActions}><button className="button button-primary" onClick={() => window.dispatchEvent(new Event('aldtor:contact'))}>Hire me <ArrowUpRight size={17} /></button><a href="#work" className={styles.workLink}>See my work <ArrowDown size={15} /></a></div>
         </div>
-        <div className={styles.portrait}><Image src="/images/portrait-cutout.webp" alt="ALDTOR" width={1100} height={1400} priority sizes="(max-width: 700px) 100vw, 58vw" /></div>
+        <div className={styles.portrait}><Image src="/images/portrait-cutout.png" alt="ALDTOR" width={1100} height={1400} priority sizes="(max-width: 700px) 100vw, 58vw" /></div>
         <button className={styles.ability} onClick={() => window.dispatchEvent(new Event('aldtor:ability'))}><span className={styles.abilityIcon}><Asterisk size={28} strokeWidth={1.25} /></span><span>Many disciplines.<br /><strong>One considered vision.</strong><span className={styles.abilityLink}>My ability card <ArrowUpRight size={12} /></span></span></button>
       </div>
       <div className={`container ${styles.heroBottom}`}><span><i />{siteConfig.availability}</span><span>Independent creative · Working remotely</span><a href="#work">Scroll to explore <ArrowDown size={12} /></a></div>
