@@ -14,6 +14,15 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
     dialog?.showModal();
     return () => { dialog?.close(); previous?.focus(); };
   }, []);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const targets = document.querySelectorAll<HTMLElement>('.home-work, .home-story, .home-endnote, .service-section');
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
+    }), { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
+    targets.forEach(target => observer.observe(target));
+    return () => observer.disconnect();
+  }, [pathname]);
   return <dialog ref={ref} className={styles.modal} aria-label={title} onCancel={onClose} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
     <div className={styles.modalTop}><span className="eyebrow">ALDTOR / {title}</span><button autoFocus className={styles.close} onClick={onClose} aria-label="Close dialog"><X size={20} /></button></div>
     {children}

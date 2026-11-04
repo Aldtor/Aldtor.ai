@@ -10,7 +10,7 @@ export function StoryTimeline() {
   const [selected, setSelected] = useState(0);
   const entry = timeline[selected];
   if (!entry) return null;
-  return <section id="story" className={styles.story} aria-labelledby="story-title"><div className="container">
+  return <section id="story" className={`${styles.story} home-story`} aria-labelledby="story-title"><div className="container">
     <div className={styles.heading}><div><span className="eyebrow">02 / Behind the work</span><h2 id="story-title">{homeContent.storyTitle}</h2></div><p>{homeContent.storyIntro}</p></div>
     <div className={styles.layout}><div className={styles.photo}><Image src="/saty.jpeg" alt="A personal portrait of ALDTOR" width={1200} height={1600} sizes="(max-width: 700px) 90vw, 40vw" /><div><span>THE PERSON BEHIND THE PIXELS</span><ArrowUpRight size={20} /></div></div>
       <div className={styles.journey}><div className={styles.journeyLabel}><span className="eyebrow">A way of working</span><span>0{selected + 1} / 0{timeline.length}</span></div>

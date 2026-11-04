@@ -39,7 +39,7 @@ export function HomePage() {
       <div className={`container ${styles.heroBottom}`}><span><i />{siteConfig.availability}</span><span>Independent creative · Working remotely</span><a href="#work">Scroll to explore <ArrowDown size={12} /></a></div>
     </section>
 
-    <section id="work" className={`container ${styles.work}`} aria-labelledby="work-title">
+    <section id="work" className={`container ${styles.work} home-work`} aria-labelledby="work-title">
       <div className={styles.sectionTop}><span className="eyebrow">01 / A multidisciplinary practice</span><span className={styles.smallNote}>Different doors. The same curiosity.</span></div>
       <div className={styles.workHeading}><h2 id="work-title">{homeContent.workTitle}</h2><p>{homeContent.workIntro}</p></div>
       <div className={styles.doorWall} ref={wall}>
@@ -55,6 +55,6 @@ export function HomePage() {
       <div className={styles.wallFoot}><span>Choose a door. Discover a different side.</span><div><button className="icon-button" aria-label="Previous discipline" onClick={() => moveWall(-1)}><ArrowLeft size={17} /></button><button className="icon-button" aria-label="Next discipline" onClick={() => moveWall(1)}><ArrowRight size={17} /></button></div></div>
     </section>
     <StoryTimeline />
-    <section className={`container ${styles.endnote}`}><Asterisk strokeWidth={1} size={34} /><p>Good things happen<br />when perspectives meet.</p><button onClick={() => window.dispatchEvent(new Event('aldtor:contact'))}>Have something in mind? <ArrowUpRight size={18} /></button></section>
+    <section className={`container ${styles.endnote} home-endnote`}><Asterisk strokeWidth={1} size={34} /><p>Good things happen<br />when perspectives meet.</p><button onClick={() => window.dispatchEvent(new Event('aldtor:contact'))}>Have something in mind? <ArrowUpRight size={18} /></button></section>
   </>;
 }
